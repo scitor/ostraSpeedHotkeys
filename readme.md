@@ -1,12 +1,11 @@
 ## Speed Hotkeys
 
-This mod adds hotkeys to the game to change gamespeed:
+This simple mod adds hotkeys for changing game speed instantly.
+Currently the keys are hardcoded to the number keys `1` - `5`, if there is urgend need those could be made configurable, but for the first version that should work..
 
-- `1` - 1x
-- `2` - 2x
-- `3` - 4x
-- `4` - 8x
-- `5` - 16x
+## Caution
+This uses the same keys as actions for selected items, use CTRL or ALT prefixes to prevent that.
+
 
 ## Installation / Usage
 - Install the UnityModManager [from here](https://www.nexusmods.com/site/mods/21?tab=files)

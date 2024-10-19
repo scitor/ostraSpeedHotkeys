@@ -35,4 +35,17 @@ class Patch
         }
         return true;
     }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(GUIQuickBar), "OnButtonClicked")]
+    static bool GUIQuickBar_OnButtonClicked__Prefix(GUIQuickActionButton qab)
+    {
+        if (Main.Settings.requireAlt && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))) {
+            return false;
+        }
+        if (Main.Settings.requireCtrl && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))) {
+            return false;
+        }
+        return true;
+    }
 }
