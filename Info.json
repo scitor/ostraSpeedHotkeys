@@ -1,0 +1,11 @@
+{
+  "Id": "SpeedHotkeys",
+  "DisplayName": "SpeedHotkeys",
+  "Author": "scitor",
+  "Version": "1.0.0",
+  "HomePage": "https://github.com/scitor/ostraSpeedHotkeys",
+  "AssemblyName": "SpeedHotkeys.dll",
+  "EntryMethod": "SpeedHotkeys.Main.Load",
+  "ManagerVersion": "0.27.3",
+  "Repository": "https://github.com/scitor/ostraSpeedHotkeys/raw/master/repository.json"
+}
