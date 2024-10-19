@@ -16,6 +16,17 @@ class Patch
         { KeyCode.Alpha5, 16f }
     };
 
+    static bool ModifierKeysActive()
+    {
+        if (Main.Settings.requireAlt && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))) {
+            return true;
+        }
+        if (Main.Settings.requireCtrl && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))) {
+            return true;
+        }
+        return false;
+    }
+
     [HarmonyPrefix]
     [HarmonyPatch(typeof(CrewSim), "KeyHandler")]
     static bool CrewSim_KeyHandler__Prefix(CrewSim __instance)
@@ -40,12 +51,31 @@ class Patch
     [HarmonyPatch(typeof(GUIQuickBar), "OnButtonClicked")]
     static bool GUIQuickBar_OnButtonClicked__Prefix(GUIQuickActionButton qab)
     {
-        if (Main.Settings.requireAlt && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))) {
-            return false;
-        }
-        if (Main.Settings.requireCtrl && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))) {
-            return false;
-        }
-        return true;
+        // prevent quickactions with active modifier keys
+        return !ModifierKeysActive();
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(GUIQuickBar), "PageDown")]
+    static bool GUIQuickBar_PageDown__Prefix()
+    {
+        // prevent quickactions with active modifier keys
+        return !ModifierKeysActive();
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(GUIQuickBar), "Refresh")]
+    static bool GUIQuickBar_Refresh__Prefix()
+    {
+        // prevent quickactions with active modifier keys
+        return !ModifierKeysActive();
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(GUIQuickBar), "ExpandCollapse")]
+    static bool GUIQuickBar_ExpandCollapse__Prefix()
+    {
+        // prevent quickactions with active modifier keys
+        return !ModifierKeysActive();
     }
 }
