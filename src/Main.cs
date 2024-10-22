@@ -1,5 +1,5 @@
-﻿using HarmonyLib;
-using System.Reflection;
+﻿#if UMM
+using HarmonyLib;
 using UnityModManagerNet;
 
 namespace SpeedHotkeys;
@@ -12,9 +12,12 @@ public static class Main
     private static bool Load(UnityModManager.ModEntry modEntry)
     {
         Settings = UnityModManager.ModSettings.Load<Settings>(modEntry);
+        Patch.requireAlt = Settings.requireAlt;
+        Patch.requireCtrl = Settings.requireCtrl;
         modEntry.OnGUI = OnDrawGUI;
         modEntry.OnSaveGUI = OnSaveGUI;
         modEntry.OnToggle = OnToggle;
+        modEntry.Logger.Log(modEntry.Info.DisplayName + " v" + modEntry.Info.Version + " Ready");
         return true;
     }
 
@@ -32,10 +35,11 @@ public static class Main
     {
         Harmony harmony = new Harmony(modEntry.Info.Id);
         if (active) {
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            harmony.PatchAll(typeof(Patch).Assembly);
         } else {
             harmony.UnpatchAll(modEntry.Info.Id);
         }
         return true;
     }
 }
+#endif

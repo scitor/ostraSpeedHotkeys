@@ -16,12 +16,15 @@ class Patch
         { KeyCode.Alpha5, 16f }
     };
 
+    public static bool requireAlt = false;
+    public static bool requireCtrl = false;
+
     static bool ModifierKeysActive()
     {
-        if (Main.Settings.requireAlt && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))) {
+        if (requireAlt && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))) {
             return true;
         }
-        if (Main.Settings.requireCtrl && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))) {
+        if (requireCtrl && (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))) {
             return true;
         }
         return false;
@@ -31,10 +34,10 @@ class Patch
     [HarmonyPatch(typeof(CrewSim), "KeyHandler")]
     static bool CrewSim_KeyHandler__Prefix(CrewSim __instance)
     {
-        if (Main.Settings.requireAlt && !Input.GetKey(KeyCode.LeftAlt) && !Input.GetKey(KeyCode.RightAlt)) {
+        if (requireAlt && !Input.GetKey(KeyCode.LeftAlt) && !Input.GetKey(KeyCode.RightAlt)) {
             return true;
         }
-        if (Main.Settings.requireCtrl && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.RightControl)) {
+        if (requireCtrl && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.RightControl)) {
             return true;
         }
         MethodInfo refSetTimeScale = typeof(CrewSim).GetMethod("SetTimeScale", BindingFlags.NonPublic | BindingFlags.Static);

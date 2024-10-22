@@ -2,6 +2,11 @@
   "Releases": [
     {
       "Id": "SpeedHotkeys",
+      "Version": "1.2.0",
+      "DownloadUrl": "https://github.com/scitor/ostraSpeedHotkeys/releases/download/v1.2/SpeedHotkeys_v1.2.0.zip"
+    },
+    {
+      "Id": "SpeedHotkeys",
       "Version": "1.1.1",
       "DownloadUrl": "https://github.com/scitor/ostraSpeedHotkeys/releases/download/v1.1.1/SpeedHotkeys_v1.1.1.zip"
     },

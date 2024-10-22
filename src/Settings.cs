@@ -1,4 +1,5 @@
-﻿using UnityModManagerNet;
+﻿#if UMM
+using UnityModManagerNet;
 
 namespace SpeedHotkeys;
 
@@ -17,5 +18,8 @@ public class Settings : UnityModManager.ModSettings, IDrawable
 
     public void OnChange()
     {
+        Patch.requireAlt = requireAlt;
+        Patch.requireCtrl = requireCtrl;
     }
 }
+#endif
