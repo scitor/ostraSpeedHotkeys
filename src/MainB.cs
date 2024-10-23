@@ -11,7 +11,7 @@ namespace SpeedHotkeys
     {
         public const string pluginGuid = "space.scitor.Ostranauts.SpeedHotkeys";
         public const string pluginName = "SpeedHotkeys";
-        public const string pluginVersion = "1.2.0";
+        public const string pluginVersion = "1.2.1";
 
         ConfigEntry<bool> requireAlt = null!;
         ConfigEntry<bool> requireCtrl = null!;
@@ -20,9 +20,11 @@ namespace SpeedHotkeys
         {
             requireAlt = Config.Bind("General", "requireAlt", false, "Require ALT + Key");
             requireAlt.SettingChanged += OnSettingChanged;
+            Patch.requireAlt = requireAlt.Value;
 
             requireCtrl = Config.Bind("General", "requireCtrl", false, "Require CTRL + Key");
             requireCtrl.SettingChanged += OnSettingChanged;
+            Patch.requireCtrl = requireCtrl.Value;
 
             Harmony harmony = new Harmony(pluginGuid);
             harmony.PatchAll(typeof(Patch).Assembly);

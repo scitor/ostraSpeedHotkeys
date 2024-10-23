@@ -14,6 +14,7 @@ public static class Main
         Settings = UnityModManager.ModSettings.Load<Settings>(modEntry);
         Patch.requireAlt = Settings.requireAlt;
         Patch.requireCtrl = Settings.requireCtrl;
+
         modEntry.OnGUI = OnDrawGUI;
         modEntry.OnSaveGUI = OnSaveGUI;
         modEntry.OnToggle = OnToggle;
