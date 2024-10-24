@@ -12,8 +12,7 @@ public static class Main
     private static bool Load(UnityModManager.ModEntry modEntry)
     {
         Settings = UnityModManager.ModSettings.Load<Settings>(modEntry);
-        Patch.requireAlt = Settings.requireAlt;
-        Patch.requireCtrl = Settings.requireCtrl;
+        Settings.OnChange();
 
         modEntry.OnGUI = OnDrawGUI;
         modEntry.OnSaveGUI = OnSaveGUI;

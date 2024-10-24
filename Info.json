@@ -2,7 +2,7 @@
   "Id": "SpeedHotkeys",
   "DisplayName": "SpeedHotkeys",
   "Author": "scitor",
-  "Version": "1.2.1",
+  "Version": "1.3.0",
   "HomePage": "https://github.com/scitor/ostraSpeedHotkeys",
   "AssemblyName": "SpeedHotkeys.dll",
   "EntryMethod": "SpeedHotkeys.Main.Load",

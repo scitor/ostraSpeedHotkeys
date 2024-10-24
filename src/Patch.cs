@@ -8,16 +8,20 @@ namespace SpeedHotkeys;
 [HarmonyPatch]
 class Patch
 {
-    static readonly Dictionary<KeyCode, float> keyMap = new() {
-        { KeyCode.Alpha1, 1f },
-        { KeyCode.Alpha2, 2f },
-        { KeyCode.Alpha3, 4f },
-        { KeyCode.Alpha4, 8f },
-        { KeyCode.Alpha5, 16f }
+    public static Dictionary<int, KeyCode> keyMap = new() {
+        { 1, KeyCode.Alpha1 },
+        { 2, KeyCode.Alpha2 },
+        { 4, KeyCode.Alpha3 },
+        { 8, KeyCode.Alpha4 },
+        { 16, KeyCode.Alpha5 },
+        { 32, KeyCode.Alpha6 },
+        { 64, KeyCode.Alpha7 },
     };
 
     public static bool requireAlt = false;
     public static bool requireCtrl = false;
+    public static bool toggleSame = false;
+    public static bool overspeed = false;
 
     static bool ModifierKeysActive()
     {
@@ -32,29 +36,47 @@ class Patch
 
     [HarmonyPrefix]
     [HarmonyPatch(typeof(CrewSim), "KeyHandler")]
-    static bool CrewSim_KeyHandler__Prefix(CrewSim __instance)
+    static void CrewSim_KeyHandler__Prefix()
     {
-        if (requireAlt && !Input.GetKey(KeyCode.LeftAlt) && !Input.GetKey(KeyCode.RightAlt)) {
-            return true;
+        if (requireAlt != (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))) {
+            return;
         }
-        if (requireCtrl && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.RightControl)) {
-            return true;
+        if (requireCtrl != (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))) {
+            return;
         }
-        MethodInfo refSetTimeScale = typeof(CrewSim).GetMethod("SetTimeScale", BindingFlags.NonPublic | BindingFlags.Static);
-        foreach (KeyValuePair<KeyCode, float> entry in keyMap) {
-            if (Input.GetKeyDown(entry.Key)) {
-                refSetTimeScale.Invoke(null, new object[] { entry.Value });
-                return false;
+        MethodInfo reflSetTimeScale = typeof(CrewSim).GetMethod("SetTimeScale", BindingFlags.NonPublic | BindingFlags.Static);
+        foreach (KeyValuePair<int, KeyCode> entry in keyMap) {
+            if (entry.Value == KeyCode.None || !Input.GetKeyDown(entry.Value) || (entry.Key > 16f && !overspeed)) {
+                continue;
             }
+            if ((int)Time.timeScale != entry.Key) {
+                reflSetTimeScale.Invoke(null, new object[] { (float)entry.Key });
+            } else if (toggleSame) {
+                reflSetTimeScale.Invoke(null, new object[] { 1f });
+            }
+            AudioManager.am.PlayAudioEmitter("UIPauseBtnOut", false);
+            return;
         }
-        return true;
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(CrewSim), "SetTimeScale")]
+    static void  CrewSim_SetTimeScale__Postfix(float fTimeScale, ref TMPro.TMP_Text ___txtRate)
+    {
+        if (fTimeScale < 32f || !overspeed)
+            return;
+
+        Time.timeScale = MathUtils.Clamp(fTimeScale, 32f, 64f);
+        if (fTimeScale > 32f)
+            ___txtRate.text = "Ludicrous\nSpeed x64";
+        else
+            ___txtRate.text = "Ridiculous\nSpeed x32";
     }
 
     [HarmonyPrefix]
     [HarmonyPatch(typeof(GUIQuickBar), "OnButtonClicked")]
     static bool GUIQuickBar_OnButtonClicked__Prefix(GUIQuickActionButton qab)
     {
-        // prevent quickactions with active modifier keys
         return !ModifierKeysActive();
     }
 
@@ -62,7 +84,6 @@ class Patch
     [HarmonyPatch(typeof(GUIQuickBar), "PageDown")]
     static bool GUIQuickBar_PageDown__Prefix()
     {
-        // prevent quickactions with active modifier keys
         return !ModifierKeysActive();
     }
 
@@ -70,7 +91,6 @@ class Patch
     [HarmonyPatch(typeof(GUIQuickBar), "Refresh")]
     static bool GUIQuickBar_Refresh__Prefix()
     {
-        // prevent quickactions with active modifier keys
         return !ModifierKeysActive();
     }
 
@@ -78,7 +98,6 @@ class Patch
     [HarmonyPatch(typeof(GUIQuickBar), "ExpandCollapse")]
     static bool GUIQuickBar_ExpandCollapse__Prefix()
     {
-        // prevent quickactions with active modifier keys
         return !ModifierKeysActive();
     }
 }
